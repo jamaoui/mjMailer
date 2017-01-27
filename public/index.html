@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="app/css/bootstrap/dist/css/bootstrap.css">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase-messaging.js"></script>
+    <title>mjMailer</title>
+    <meta charset="utf-8">
+</head>
+<body>
+<nav class="navbar navbar-default ">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <img align="left" src="app/img/logo-sm.png">
+        </div>
+        <div class="collapse navbar-collapse" >
+            <ul class="nav navbar-nav navbar-right" id="myNavbar">
+                <li>
+                    <a href="#">Bienvenue Cher Visiteur</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- First Container -->
+<div class="container-fluid bg-1 text-center" style="border-bottom: 2px dotted gainsboro;margin-bottom:2%" >
+    <div class="container col-lg-12" >
+        <h5 style="font-family:'Roboto Condensed';color:cornflowerblue" class="margin">Voulez vous Envoyer des Messages ? ç'est le
+            <strong>Bon</strong> Endroit
+        </h5>
+        <br><br>
+    </div>
+    <div  id="formulaire" class="container col-lg-5">
+        <form action="#" method="POST" onsubmit="return false;">
+        <div class="form-group row">
+            <label for="email" class="col-2 col-form-label">Email</label>
+            <div class="col-10">
+                <input  class="form-control" required type="email" placeholder="Email" id="email">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="password" class="col-2 col-form-label">Mot de Passe</label>
+            <div class="col-10">
+                <input  class="form-control"    required type="password" placeholder="Mot de Passe" id="password">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-10">
+                <button class="btn btn-primary" id="connexion">Connexion <span class="glyphicon glyphicon-log-in"></span></button>
+                <button class="btn btn-info" id="inscription">Inscription <span class="glyphicon glyphicon-plus"></span></button>
+            </div>
+        </div>
+        <div class="alert alert-info alert-dismissable">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong> SVP !</strong>
+            <span><em id="error">en cliquant sur inscription vous allez creer un compte avec le meme formulaire ...</em></span>
+        </div>
+        </form>
+    </div>
+    <div class="container col-lg-5" id="logoMjMailer">
+
+        <img src="app/img/logo.png" class="img-responsive " style="display:inline" alt="MjMailer" width="450px" height="450px">
+    </div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div  class="container">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col col-xs-9">
+                            <h1 class="panel-title">Les Derniers Messages </h1>
+                        </div>
+                        <div class="col col-xs-2 text-right">
+                            <button data-toggle="tooltip"  title="vous devez vous connecter pour  Écrire Un Message!" type="button"   class="btn btn-sm btn-primary" id="ecrireMessage">Écrire Un Message
+                                    <span class="glyphicon glyphicon-plus"></span>
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table id="messagesTable" class="table table-striped table-bordered table-list">
+                        <thead>
+                        <tr>
+                            <th style="border:none" colspan="2">
+                                <input type="checkbox" id="toggleAjax"  data-toggle="toggle" data-on="FIREBASE" data-off="AJAX" data-onstyle="primary" data-offstyle="success">
+                                  </th>
+                            <th style="border:none" style="margin:0px auto" colspan="3">
+                                <span id="toggleMessage"></span>
+                            </th>
+                            <th  style="padding: 2%" ><span onclick="send.lister()"  style="cursor:pointer;font-size:2em" class="glyphicon glyphicon-refresh"></span></th>
+                        </tr>
+                        <tr>
+                            <th>
+                                <em class="fa fa-cog"></em>
+                            </th>
+
+                            <th>Email</th>
+                            <th>Objet</th>
+                            <th>Message</th>
+                            <th colspan="2">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid bg-2 text-center" style="background-color:ghostwhite;border-top: 2px dotted gainsboro">
+    <div style="padding: 20px;text-align: center;
+          display: inline-block;
+          width: auto;
+          max-width: 300px;
+          min-width: 172px;
+          text-align: center;
+          padding: 15px;
+          transition: all 0.4s;">
+        <span class="glyphicon glyphicon-education"  style="font-size:5em;color:royalblue"></span>
+        <h1 style="font-family: 'Roboto Mono Medium'"></h1>
+        <p align="center" style="border:2px royalblue dotted;margin:0px auto;background: url('app/img/jamaoui.jpg') no-repeat;background-size: cover;width: 200px;height: 200px;border-radius: 100px 100px 100px 100px;">
+            </p>
+        <h4 align="center" style="font-family: 'Roboto Condensed';">
+            Mouad Jamaoui (Mj)
+        </h4>
+        <p  style="font-family: 'Roboto Mono Light';" >
+            <img src="app/img/maroc.png" width="15%"  alt="Maroc">
+            <br><br>
+            <hr>
+            Je travaille en tant que développeur Web et programmeur et chercheur de sécurité, je construit beaucoup de projets
+            html-css-js-jq-php-bs, et je les  publie sur Internet gratuitement pour tous les autres développeurs ...
+        <hr>
+        </p>
+        <p align="center">
+            <a  data-toggle="tooltip" title="Compte Youtube" href="https://www.youtube.com/channel/UCUNnFmj-VIpbERooz_Znzfg">
+                <img src="app/img/3319130-0-youtube.ico" width="50px" alt="">
+            </a>
+            <a  data-toggle="tooltip" title="Compte Twitter" class="twitter2 social" href="https://twitter.com/jamaouimouad">
+                <img
+                        src="app/img/twitter-clipart-twitter-logo-2-png-rVEtd0-clipart.png" width="50px" alt="">
+            </a>
+            <a   data-toggle="tooltip" title="Compte LinkedIn" class="linkedin social" href="https://www.linkedin.com/in/mouad-jamaoui-3940a0ba">
+                <img
+                        src="app/img/20150629-LinkedIn-Logo.png" width="50px" alt="">
+            </a>
+            <a data-toggle="tooltip" title="Compte Facebook" href="https://www.facebook.com/JamaouiMouad">
+                <img
+                        src="app/img/facebook-messenger-logo-preview-400x400.png" width="50px" alt="">
+            </a>
+            <a data-toggle="tooltip" title="voulez vous Envoyer un message  ? " href="mailto:mouad.jamaoui@gmail.com" style="text-decoration:none;font-size:4rem;">
+                <img
+                        src="app/img/gmail.png" width="50px" alt="">
+            </a>
+        </p>
+    </div>
+</div>
+
+<footer style="border-top: 2px dotted gainsboro" class="container-fluid col-sm-12">
+    <p >
+        <h6 class="center-block text-center" >
+            Made with
+    <img src="https://media.giphy.com/media/VlzUkJJzvz0UU/giphy.gif" class="img " width="25px" alt="">
+
+</h6>
+
+
+    </p>
+</footer>
+
+<div id="modalSupprimer" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> <span class="glyphicon glyphicon-warning-sign"></span> Supprimer Message</h4>
+            </div>
+            <div class="modal-body">
+
+                    <div class="alert alert-danger">
+                        Attention ce Message va etre supprimé définitivement de notre base de données (Action Irreversible)
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                <button type="button"  class="btn btn-danger supprimerDefinitivement" >Supprimer</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal -->
+<div  class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Écrire Un Email</h4>
+            </div>
+            <div class="modal-body">
+                <form style="padding:4%" action="#" method="POST" onsubmit="return false;">
+                    <div id="errorMessage" class="alert alert-warning alert-dismissable">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+
+                        <span><em > <em><u> Attention !</u></em> Si Aucun Objet N'est Saisie vous risquez d'envoyer un Email avec le texte Suivant <strong>(Aucun Objet)</strong> ...</em></span>
+                    </div>
+                    <div class="form-group row">
+                        <label for="objetMessage" class="col-2 col-form-label">Objet</label>
+                        <div class="col-10">
+                            <input class="form-control"  type="text" placeholder="Objet" id="objetMessage">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="corpsMessage" class="col-2 col-form-label">Message</label>
+                        <div class="col-10">
+                            <textarea class="form-control" rows="5" required  placeholder="Message ..." id="corpsMessage"></textarea>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Retour</button>
+                <button type="button" id="envoyerMessage" class="btn btn-primary">Envoyer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div  class="modal fade" id="modalModifier" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modifier Un Email</h4>
+            </div>
+            <div class="modal-body">
+                <form style="padding:4%" action="#" method="POST" onsubmit="return false;">
+                    <div  class="alert alert-info alert-dismissable">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+
+                        <span><em > <em><u> Attention !</u></em> quand vous allez modifier ce Message ,  Si Aucun Objet N'est Saisie vous risquez d'envoyer un Email avec le texte Suivant <strong>(Aucun Objet)</strong> ...</em></span>
+                    </div>
+                    <div class="form-group row">
+                        <label for="objetMessage" class="col-2 col-form-label">Objet</label>
+                        <div class="col-10">
+                            <input class="form-control"  type="text" placeholder="Objet" id="objetMessageModifier">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="corpsMessage" class="col-2 col-form-label">Message</label>
+                        <div class="col-10">
+                            <textarea class="form-control" rows="5" required  placeholder="Message ..." id="corpsMessageModifier"></textarea>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Retour</button>
+                <button type="button" class="btn btn-primary modifierMessage">Modifier</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
+<script src="app/js/jquery.js"></script>
+<!--http://www.bootstraptoggle.com-->
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+<script src="app/css/bootstrap/dist/js/bootstrap.js"></script>
+<script src="app/js/Configuration.js"></script>
+<script src="app/js/Message.js"></script>
+
+<script type="text/javascript" src="app/js/Ajax.js"></script>
+<script src="app/js/MessageService.js"></script>
+<script type="text/javascript" src="app/js/AFirebase.js"></script>
+
+<script>
+
+    let method = "AJAX";
+    let send =Configuration.getMethod(method);
+
+    var config = {
+        apiKey: "AIzaSyCmCccC5_NnHL1sq_zJT38uf1J0Z0hiLGM",
+        authDomain: "https://mjmailer-ea378.firebaseapp.com",
+        databaseURL: "https://mjmailer-ea378.firebaseio.com",
+        storageBucket: "gs://mjmailer-ea378.appspot.com"
+    };
+    firebase.initializeApp(config);
+
+
+
+    //SI L'UTILISATEUR N'EST PAS CONNECTEE
+    let currentUser ="visiteur";
+
+    document.querySelector("#connexion").addEventListener("click",function(e){
+        let email = document.querySelector("#email").value;
+        let password = document.querySelector("#password").value;
+        currentUser=send.connexion(email, password)
+    });
+    document.querySelector("#inscription").addEventListener("click",function(e){
+        let email = document.querySelector("#email").value;
+        let password = document.querySelector("#password").value;
+        if(email && password)
+            send.creerCompte(email, password)
+        else
+            $("#email").focus();
+    });
+
+    document.querySelector("#ecrireMessage").addEventListener("click",function(e){
+        if(currentUser!="visiteur")
+        {
+            $('#myModal').modal('show');
+        }
+    });
+
+    document.querySelector(".supprimerDefinitivement").addEventListener("click",function(e){
+        if(currentUser!="visiteur")
+        {
+            send.supprimer($(this));
+        }
+    });
+    document.querySelector(".modifierMessage").addEventListener("click",function(e){
+        if(currentUser!="visiteur")
+        {
+            send.modifier($(this));
+        }
+    });
+    document.querySelector("#envoyerMessage").addEventListener("click",function(e){
+
+        let objetMessage = document.querySelector("#objetMessage").value;
+        let corpsMessage = document.querySelector("#corpsMessage").value;
+
+        if(currentUser !="visiteur")
+        {
+            if(corpsMessage)
+            {
+                document.querySelector("#objetMessage").value="";
+                document.querySelector("#corpsMessage").value="";
+                $('#myModal').modal('hide');
+
+                setTimeout(function(){
+                    send.ajouter(currentUser.Qd.email,objetMessage,corpsMessage)
+
+                    ;},600
+                );
+            }
+            else
+            {
+                $("#errorMessage").fadeOut(1000,function () {
+                    $("#errorMessage").html("Le <strong>Message</strong> Est Obligatoire<br><br>");
+                    $("#errorMessage").fadeIn(1000);
+                    $("#corpsMessage").focus();
+                });
+
+
+
+            }
+
+        }
+
+    });
+
+    $(function() {
+        $('#toggleAjax').change(function() {
+
+            if(method=="FIREBASE")
+            {
+                method="AJAX";
+            }
+            else if(method=="AJAX")
+            {
+                method="FIREBASE";
+            }
+            else
+            {
+                alert("OK")
+            }
+
+            send = Configuration.getMethod(method);
+
+            send.lister();
+        })
+    })
+
+
+    document.querySelector("#ecrireMessage").addEventListener("click",function(e){
+        if(currentUser!="visiteur")
+        {
+            $('#myModal').modal('show');
+        }
+    });
+    send.lister();
+
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+
+    });
+
+</script>
+
+</body>
+</html>
